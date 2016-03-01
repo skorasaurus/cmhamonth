@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from fnmatch import fnmatch
-import agate
+import agate 
 import re
 import datetime
 
@@ -17,6 +17,8 @@ julytable = agate.Table.from_csv('2.3-july.csv')
 # adult = julytable.where(lambda row: 18 < row['age'] < 54)
 # elderly = julytable.where(lambda row: 55 < row['age'] < 180)
 
+
+
 # this works; 
 cmhatotal = julytable.aggregate(agate.Count('housing_other', 'CMHA'))
 print "Total CMHA Clients served:", cmhatotal
@@ -29,11 +31,19 @@ youth = cmhatable.where(lambda row: 0 < row['age'] < 19)
 adult = cmhatable.where(lambda row: 18 < row['age'] < 54)
 elderly = cmhatable.where(lambda row: 55 < row['age'] < 180)
 
-print "the first elderly count" + agate.aggregations.Length(elderly)
+CMHAelderlycount = len(elderly.rows)
+CMHAadultcount = len(adult.rows)
+CMHAyouthcount = len(youth.rows)
+
+print "elderly clients this month",(CMHAelderlycount)
+print "elderly clients this month",(CMHAadultcount)
+print "Youth clients this month",(CMHAyouthcount)
 
 
-elderlycount = julytable.aggregate(agate.Count(elderly))
-print "CMHA seniors are:", elderlycount
+
+
+# elderlycount = julytable.aggregate(agate.Count(elderly))
+# print "CMHA seniors are:", elderlycount
 
 
 # counts the number of houses for the households that were served; 
