@@ -1,53 +1,89 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from fnmatch import fnmatch
 import agate 
 import re
 import datetime
 
-julytable = agate.Table.from_csv('2.3-july.csv')
+
+monthlytable = agate.Table.from_csv('2.5-july.csv')
 
 # selects which tables to use; lamba means this is a function that I'm just using once, throwing away, sorta. 
-# new_table = julytable.where(lambda row: re.match('Served', row['Reservation Status']))
-
-#CMHA by age ranges 
-
-# youth = julytable.where(lambda row: 0 < row['age'] < 19)
-# adult = julytable.where(lambda row: 18 < row['age'] < 54)
-# elderly = julytable.where(lambda row: 55 < row['age'] < 180)
+# new_table = monthlytable.where(lambda row: re.match('Served', row['Reservation Status']))
 
 
+# tables separated by AGE
+youth = monthlytable.where(lambda row: 0 < row['age'] < 18)
+adult = monthlytable.where(lambda row: 17 < row['age'] < 59)
+elderly = monthlytable.where(lambda row: 59 < row['age'])
 
-# this works; 
-cmhatotal = julytable.aggregate(agate.Count('housing_other', 'CMHA'))
-print "Total CMHA Clients served:", cmhatotal
+# tables - now separate by gender
+youthf = youth.where(lambda row: row['gender'] == 'F')
+youthm = youth.where(lambda row: row['gender'] == 'M')
 
-# create table only of CMHA clients
-cmhatable = julytable.where(lambda row: row['housing_other'] == 'CMHA')
+adultf = adult.where(lambda row: row['gender'] == 'F')
+adultm = adult.where(lambda row: row['gender'] == 'M')
 
-# now filter this 
-youth = cmhatable.where(lambda row: 0 < row['age'] < 19)
-adult = cmhatable.where(lambda row: 18 < row['age'] < 54)
-elderly = cmhatable.where(lambda row: 55 < row['age'] < 180)
+elderlyf = elderly.where(lambda row: row['gender'] == 'F')
+elderlym = elderly.where(lambda row: row['gender'] == 'M')
 
-CMHAelderlycount = len(elderly.rows)
-CMHAadultcount = len(adult.rows)
-CMHAyouthcount = len(youth.rows)
+# I could also use a pivot, but I'm being explicit, for the sake of learning 
+# and ensuring I don't screw up
+# http://agate.readthedocs.org/en/1.3.0/cookbook/transform.html
 
-print "elderly clients this month",(CMHAelderlycount)
-print "elderly clients this month",(CMHAadultcount)
-print "Youth clients this month",(CMHAyouthcount)
+# aggregate the count for all
+cmhayouthf = youthf.aggregate(agate.Count('housing_other', 'CMHA'))
+cmhayouthm = youthm.aggregate(agate.Count('housing_other', 'CMHA'))
+
+cmhaadultf = adultf.aggregate(agate.Count('housing_other', 'CMHA'))
+cmhaadultm = adultm.aggregate(agate.Count('housing_other', 'CMHA'))
+
+cmhaelderlyf = elderlyf.aggregate(agate.Count('housing_other', 'CMHA'))
+cmhaelderlym = elderlym.aggregate(agate.Count('housing_other', 'CMHA'))
 
 
+print("For CMHA clients")
+print("Youth F clients this month:",(cmhayouthf))
+print("Youth M clients this month:",(cmhayouthm))
+print("adult F clients this month:",(cmhaadultf))
+print("Youth M clients this month:",(cmhayouthm))
+print("Elderly F clients this month",(cmhaelderlyf))
+print("Elderly M clients this month:",(cmhaelderlym))
 
 
-# elderlycount = julytable.aggregate(agate.Count(elderly))
-# print "CMHA seniors are:", elderlycount
+cmhatotalm = cmhayouthm + cmhaelderlym + cmhaadultm
+print("Total CMHA - M clients",(cmhatotalm))
+
+cmhatotalf = cmhayouthf + cmhaelderlyf + cmhaadultf
+print("Total CMHA - F clients",(cmhatotalf))
+
+#print(type(youthm))
+#print(type(cmhayouthm))
+	
+print("Non-CMHA clients below:")
+
+otheryouthf = ((youthf.aggregate(agate.Count()) - cmhayouthf))
+otheryouthm = ((youthm.aggregate(agate.Count()) - cmhayouthm))
+otheradultf = ((adultf.aggregate(agate.Count()) - cmhaadultf))
+otheradultm = ((adultm.aggregate(agate.Count()) - cmhaadultm))
+otherelderlyf = ((elderlyf.aggregate(agate.Count()) - cmhaelderlyf))
+otherelderlym = ((elderlym.aggregate(agate.Count()) - cmhaelderlym))
+
+print("NON-CMHA Youth females",(otheryouthf))
+
+print("NON-CMHA Youth males",(otheryouthm))
+
+print("NON-CMHA Adult females",(otheradultf))
+
+print("NON-CMHA Adult males",(otheradultm))
+
+print("NON-CMHA Elderly females",(otherelderlyf))
+
+print("NON-CMHA Elderly males",(otherelderlym))
+
+
 
 
 # counts the number of houses for the households that were served; 
-# sauce = julytable.aggregate(agate.Count('Reservation Status', 'Served'))
+# sauce = monthlytable.aggregate(agate.Count('Reservation Status', 'Served'))
 
-# totalppl = julytable.aggregate(agate.Count(new_table))
+# totalppl = monthlytable.aggregate(agate.Count(new_table))
 
