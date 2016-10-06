@@ -4,7 +4,7 @@ import re
 import datetime
 
 
-monthlytable = agate.Table.from_csv('2.5-july.csv')
+monthlytable = agate.Table.from_csv('2015-10-30.csv')
 
 # selects which tables to use; lamba means this is a function that I'm just using once, throwing away, sorta. 
 # new_table = monthlytable.where(lambda row: re.match('Served', row['Reservation Status']))
@@ -80,6 +80,11 @@ print("NON-CMHA Elderly females",(otherelderlyf))
 print("NON-CMHA Elderly males",(otherelderlym))
 
 
+othertotalm = otheryouthm + otherelderlym + otheradultm
+print("Total Non-CMHA - M clients",(othertotalm))
+
+othertotalf = otheryouthf + otherelderlyf + otheradultf
+print("Total NON-CMHA - F clients",(othertotalf))
 
 
 # counts the number of houses for the households that were served; 
