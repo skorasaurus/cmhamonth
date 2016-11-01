@@ -1,0 +1,5 @@
+loc_id,date,first_name,last_name,housing_other,gender,dob,age,age_group,race_desc,ethnic_desc,latitude,longitude,family_id
+1097,7/10/2015,John,Doe,CMHA,M,1/3/1926,89,85 plus,Black or African American,,-81.686925,41.495309,12345
+1097,7/10/2015,Jane,Doe,,F,9/11/1949,66,65 - 84,Black or African American,"Not of Hispanic, Latino, or Spanish origin",-81.986925,41.495309,54321
+1097,7/10/2015,Amy,Doe,,F,4/14/1994,21,18 - 24,Black or African American,"Not of Hispanic, Latino, or Spanish origin",-81.986925,41.495309,54321
+1097,7/17/2015,Jamie,Doe,,F,1/1/1993,22,18 - 24,Black or African American,"Not of Hispanic, Latino, or Spanish origin",-81.986966,41.494309,98765
