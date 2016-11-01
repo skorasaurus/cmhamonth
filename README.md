@@ -1,6 +1,6 @@
 Python script to obtain monthly statistics of our pantry for CMHA
 
-wHY:
+why:
 I need to calculate the number of people that live in CMHA (Cuyahoga Metropolitan Housing Authority) housing 
 that our pantry serves within specific age ranges each month.
 
